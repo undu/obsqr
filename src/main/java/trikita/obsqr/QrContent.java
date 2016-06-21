@@ -39,8 +39,21 @@ public abstract class QrContent {
 		try {
 			context.startActivity(getActionIntent());
 		} catch (ActivityNotFoundException e) {
-			// FIXME: wrong string resource
-			Toast.makeText(context, context.getString(R.string.alert_msg_invalid_market_link),
+			Toast.makeText(context, context.getString(R.string.alert_msg_activity_not_found),
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+    public void share() {
+		try {
+			Intent sendIntent = new Intent();
+			sendIntent.setAction(Intent.ACTION_SEND);
+			sendIntent.putExtra(Intent.EXTRA_TEXT, rawContent);
+			sendIntent.setType("text/plain");
+			context.startActivity(
+				Intent.createChooser(sendIntent, context.getString(R.string.dlg_share_msg)));
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(context, context.getString(R.string.alert_msg_activity_not_found),
 					Toast.LENGTH_SHORT).show();
 		}
 	}
