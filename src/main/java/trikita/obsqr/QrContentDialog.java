@@ -8,10 +8,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class QrContentDialog extends FrameLayout {
-
-	/* Display decoded QR content on screen for 3 sec */
-	private final static int DURATION_OF_KEEPING_TEXT_ON = 3000;
-
 	public final static int MAX_HORIZONTAL_BUTTON_TEXT_LENGTH = 12;
 
 	private Runnable mCloseDialogRunnable = new Runnable() {
@@ -62,7 +58,6 @@ public class QrContentDialog extends FrameLayout {
 		mContentText.setText(mContent.content);
 		mActionButton.setText(mContent.action);
 		removeCallbacks(mCloseDialogRunnable);
-		postDelayed(mCloseDialogRunnable, DURATION_OF_KEEPING_TEXT_ON);
 		setVisibility(View.VISIBLE);
 
 		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCancelButton.getLayoutParams();
