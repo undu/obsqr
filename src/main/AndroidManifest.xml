@@ -16,8 +16,9 @@
 		android:hardwareAccelerated="true"
 		android:supportsRtl = "true"
 		android:icon="@drawable/ic_launcher"
-		android:theme="@android:style/Theme.NoTitleBar.Fullscreen">
+		android:theme="@style/Theme.AppCompat.Light.NoActionBar.FullScreen">
 		<activity android:name="ObsqrActivity"
+
 			android:launchMode="singleTop"
 			android:label="@string/app_name">
 			<intent-filter>

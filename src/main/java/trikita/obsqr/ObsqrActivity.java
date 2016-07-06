@@ -1,13 +1,16 @@
 package trikita.obsqr;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.Manifest;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.widget.Toast;
 
 import hugo.weaving.DebugLog;
 
@@ -16,9 +19,7 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 	public final static int PERMISSIONS_REQUEST = 100;
 
 	private CameraPreview mCameraPreview;
-	private QrContentDialog mDialog;
-
-	private QrContent mQrContent = null;
+	private AlertDialog mDialog;
 
 	private String mLastKnownContent = "";
 
@@ -28,7 +29,6 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 		setContentView(R.layout.main);
 
 		mCameraPreview = (CameraPreview) findViewById(R.id.surface);
-		mDialog = (QrContentDialog) findViewById(R.id.container);
 
 		mCameraPreview.setOnQrDecodedListener(this);
 
@@ -37,26 +37,45 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 				requestPermissions(new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST);
 			}
 		}
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		mDialog = builder.create();
 	}
 
 	@Override
 	public void onQrDecoded(String s) {
-		if (mLastKnownContent.equals(s) && mQrContent == null) { // Same content was cancelled
+		if (mDialog.isShowing()) {
 			return;
 		}
 		mLastKnownContent = s;
-		mQrContent = QrContent.from(this, s);
-		mDialog.open(mQrContent);
+		final QrContent mQrContent = QrContent.from(this, s);
+		mDialog.setTitle(mQrContent.title);
+		mDialog.setMessage(mQrContent.content);
+		mDialog.setButton(AlertDialog.BUTTON_POSITIVE, mQrContent.action, new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+							performAction(mQrContent);
+					}
+				});
+		mDialog.setButton(AlertDialog.BUTTON_NEUTRAL, this.getString(R.string.dlg_alert_share_btn_caption), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						performShare(mQrContent);
+					}
+					});
+		mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getString(R.string.dlg_alert_cancel_btn_caption), new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						// do nothing (just dismiss dialog)
+					}
+				});
+		mDialog.show();
 	}
 
 	@Override
 	public void onQrNotFound() {
-		mLastKnownContent = "";
 	}
 
 	@Override
 	public boolean dispatchKeyEvent(KeyEvent event) {
-		if (mQrContent == null) {
+		if (!mDialog.isShowing()) {
 			return super.dispatchKeyEvent(event);
 		}
 		// Pressing DPAD, Volume keys or Camera key would call the QR action
@@ -65,10 +84,11 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 			case KeyEvent.KEYCODE_CAMERA:
 			case KeyEvent.KEYCODE_VOLUME_UP:
 			case KeyEvent.KEYCODE_VOLUME_DOWN:
-				mQrContent.performAction();
+				performAction(QrContent.from(this, mLastKnownContent));
 				return true;
+			default:
+				return super.dispatchKeyEvent(event);
 		}
-		return super.dispatchKeyEvent(event);
 	}
 
 	@DebugLog
@@ -100,7 +120,9 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 	@DebugLog
 	@Override
 	protected void onPause() {
-		mDialog.close();
+		if (mDialog.isShowing()) {
+			mDialog.dismiss();
+		}
 		mCameraPreview.releaseCamera();
 		super.onPause();
 	}
@@ -108,7 +130,9 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 	@DebugLog
 	@Override
 	public void onBackPressed() {
-		if (!mDialog.close()) {
+		if (mDialog.isShowing()) {
+			mDialog.dismiss();
+		} else {
 			super.onBackPressed();
 		}
 	}
@@ -122,5 +146,22 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 			return;
 		}
 		finish();
+	}
+
+	private void performAction(QrContent content) {
+		try {
+			this.startActivity(content.getActionIntent(this));
+		} catch (ActivityNotFoundException e) {
+			Toast.makeText(this, this.getString(R.string.alert_msg_activity_not_found),
+					Toast.LENGTH_SHORT).show();
+		}
+	}
+
+
+	public void performShare(QrContent content) {
+		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, content.rawContent);
+		this.startActivity(Intent.createChooser(intent, this.getString(R.string.intent_share_caption)));
 	}
 }

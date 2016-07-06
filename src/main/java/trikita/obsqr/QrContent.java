@@ -1,6 +1,5 @@
 package trikita.obsqr;
 
-import android.content.ActivityNotFoundException;
 import android.content.ClipboardManager;
 import android.content.ClipData;
 import android.content.ClipDescription;
@@ -25,33 +24,14 @@ public abstract class QrContent {
     public final String action;
     public final Spannable content;
 
-	protected final Context context;
-
-    private QrContent(Context c, String s, String title, String action, Spannable content) {
-		this.context = c;
+    private QrContent(String s, String title, String action, Spannable content) {
         this.rawContent = s;
         this.action = action;
         this.title = title;
         this.content = content;
     }
 
-    public void performAction() {
-		try {
-			context.startActivity(getActionIntent());
-		} catch (ActivityNotFoundException e) {
-			Toast.makeText(context, context.getString(R.string.alert_msg_activity_not_found),
-					Toast.LENGTH_SHORT).show();
-		}
-	}
-
-	public void performShare() {
-		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-		intent.setType("text/plain");
-		intent.putExtra(Intent.EXTRA_TEXT, rawContent);
-		context.startActivity(Intent.createChooser(intent, context.getString(R.string.intent_share_caption)));
-	}
-
-	public Intent getActionIntent() {
+	public Intent getActionIntent(Context context) {
 		return new Intent(Intent.ACTION_VIEW, Uri.parse(rawContent));
 	}
 
@@ -125,18 +105,18 @@ public abstract class QrContent {
 	/** Mixed content: plain text that may contain some URLs, emails etc */
 	static class QrMixedContent extends QrContent {
 		public QrMixedContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_text), c.getString(R.string.action_text), spannable(s));
+			super(s, c.getString(R.string.title_text), c.getString(R.string.action_text), spannable(s));
 		}
-		public void performAction() {
-			copyToClipboard(context, rawContent);
-		}
+		//public void performAction() {
+		//	copyToClipboard(context, rawContent);
+		//}
 	}
 
 	/** Web URL */
 	static class WebUrlContent extends QrContent {
 		public final static String MATCH = android.util.Patterns.WEB_URL.pattern();
 		public WebUrlContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_url), c.getString(R.string.action_url), url(s));
+			super(s, c.getString(R.string.title_url), c.getString(R.string.action_url), url(s));
 		}
 		private static Spannable url(String s) {
 			if (!s.startsWith("http:") && !s.startsWith("https:") && !s.startsWith("ftp:")) {
@@ -150,7 +130,7 @@ public abstract class QrContent {
 	static class EmailContent extends QrContent {
 		public final static String MATCH = "mailto:(.*)";
 		public EmailContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_email),
+			super(s, c.getString(R.string.title_email),
 					c.getString(R.string.action_email), getContent(c, s));
 		}
 		private static Spannable getContent(Context c, String s) {
@@ -163,7 +143,7 @@ public abstract class QrContent {
 				return spannable(s);
 			}
 		}
-		public Intent getActionIntent() {
+		public Intent getActionIntent(Context context) {
 			Intent intent = new Intent(Intent.ACTION_SEND);
 			intent.setType("text/plain");
 			try {
@@ -183,7 +163,7 @@ public abstract class QrContent {
 	static class SmsContent extends QrContent {
 		public final static String MATCH = "smsto:(.*)";
 		public SmsContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_sms), c.getString(R.string.action_sms), getContent(c, s));
+			super(s, c.getString(R.string.title_sms), c.getString(R.string.action_sms), getContent(c, s));
 		}
 		private static Spannable getContent(Context c, String raw) {
 			String[] s = raw.split(":");
@@ -195,7 +175,7 @@ public abstract class QrContent {
 			}
 			return spannable(res);
 		}
-		public Intent getActionIntent() {
+		public Intent getActionIntent(Context context) {
 			String[] s = rawContent.split(":");
 			String uri= s[0] + ":" + s[1];
 			Intent intent = new Intent(Intent.ACTION_SENDTO, Uri.parse(uri));
@@ -211,9 +191,9 @@ public abstract class QrContent {
 	static class PhoneNumberContent extends QrContent {
 		public final static String MATCH = "tel:(.*)";
 		public PhoneNumberContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_phone), c.getString(R.string.action_phone), spannable(s.substring(4)));
+			super(s, c.getString(R.string.title_phone), c.getString(R.string.action_phone), spannable(s.substring(4)));
 		}
-		public Intent getActionIntent() {
+		public Intent getActionIntent(Context context) {
 			return new Intent(Intent.ACTION_DIAL, Uri.parse(rawContent));
 		}
 	}
@@ -222,14 +202,14 @@ public abstract class QrContent {
 	static class GeoLocationContent extends QrContent {
 		public final static String MATCH = "geo:(.*)";
 		public GeoLocationContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_geo), c.getString(R.string.action_geo), spannable(getContent(c, s)));
+			super(s, c.getString(R.string.title_geo), c.getString(R.string.action_geo), spannable(getContent(c, s)));
 		}
 		private static String getContent(Context context, String s) {
 			String[] tokens = s.substring(4).split("\\?q=");
 			StringBuilder res = new StringBuilder();
 			if (tokens.length == 2 && tokens[1].length() > 0) {
-				res.append(context.getString(R.string.geo_qr_title_title) +
-						" " + tokens[1] + "\n");
+				res.append(context.getString(R.string.geo_qr_title_title))
+						.append(" ").append(tokens[1]).append("\n");
 			}
 
 			String[] params = tokens[0].split(",");
@@ -241,18 +221,20 @@ public abstract class QrContent {
 				float latitude = Float.parseFloat(params[0]);
 				String southMark = context.getString(R.string.geo_qr_latitude_south);
 				String northMark = context.getString(R.string.geo_qr_latitude_north);
-				res.append(context.getString(R.string.geo_qr_latitude_title) +
-						" " + Math.abs(latitude) + "\u00b0 " + (latitude < 0 ? southMark : northMark));
-				float longtitude = Float.parseFloat(params[1]);
+				res.append(context.getString(R.string.geo_qr_latitude_title)).append(" ")
+						.append(Math.abs(latitude)).append("\u00b0 ")
+						.append(latitude < 0 ? southMark : northMark);
+				float longitude = Float.parseFloat(params[1]);
 				String westMark = context.getString(R.string.geo_qr_longitude_west);
 				String eastMark = context.getString(R.string.geo_qr_longitude_east);
-				res.append("\n" + context.getString(R.string.geo_qr_longitude_title) +
-						" " + Math.abs(longtitude) + "\u00b0 " + (longtitude < 0 ? westMark : eastMark));
+				res.append("\n").append(context.getString(R.string.geo_qr_longitude_title)).append(" ")
+						.append(Math.abs(longitude)).append("\u00b0 ")
+						.append(longitude < 0 ? westMark : eastMark);
 				if (params.length == 3) {
 					float altitude = Float.parseFloat(params[2]);
-					res.append("\n" + context.getString(R.string.geo_qr_altitude_title) +
-							" " + altitude + " " +
-							context.getString(R.string.geo_qr_altitude_suffix));
+					res.append("\n").append(context.getString(R.string.geo_qr_altitude_title))
+							.append(" ").append(altitude).append(" ")
+							.append(context.getString(R.string.geo_qr_altitude_suffix));
 				}
 				return res.toString();
 			} catch (NumberFormatException e) {
@@ -281,7 +263,7 @@ public abstract class QrContent {
 		};
 
 		public ContactContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_contact), c.getString(R.string.action_contact), getContent(c, s));
+			super(s, c.getString(R.string.title_contact), c.getString(R.string.action_contact), getContent(c, s));
 		}
 
 		private static Spannable getContent(Context c, String s) {
@@ -296,7 +278,7 @@ public abstract class QrContent {
 			return spannable(res.toString());
 		}
 
-		public Intent getActionIntent() {
+		public Intent getActionIntent(Context context) {
 			Intent intent = new Intent(Intent.ACTION_INSERT);
 			intent.setType(ContactsContract.Contacts.CONTENT_TYPE);
 			Map<String, String> tokens = parse(rawContent.substring(7), FIELDS);
@@ -314,7 +296,7 @@ public abstract class QrContent {
 		public final static String MATCH = "market://(details\\?id=)?(.*)";
 
 		public GooglePlayContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_market), c.getString(R.string.action_market), getContent(s));
+			super(s, c.getString(R.string.title_market), c.getString(R.string.action_market), getContent(s));
 		}
 		private static Spannable getContent(String s) {
 			Matcher m = Pattern.compile(MATCH).matcher(s);
@@ -336,7 +318,7 @@ public abstract class QrContent {
 				R.string.wifi_qr_password_title,
 		};
 		public WifiContent(Context c, String s) {
-			super(c, s, c.getString(R.string.title_wifi), c.getString(R.string.action_wifi), getContent(c, s));
+			super(s, c.getString(R.string.title_wifi), c.getString(R.string.action_wifi), getContent(c, s));
 		}
 		public static Spannable getContent(Context context, String s) {
 			StringBuilder res = new StringBuilder();
@@ -350,7 +332,7 @@ public abstract class QrContent {
 			return spannable(res.toString());
 		}
 
-		public Intent getActionIntent() {
+		public Intent getActionIntent(Context context) {
 			String passwd = parse(rawContent.substring(5), FIELDS).get("P");
 			if (passwd != null) {
 				copyToClipboard(context, passwd);
