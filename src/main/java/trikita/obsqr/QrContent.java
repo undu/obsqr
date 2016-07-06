@@ -39,10 +39,16 @@ public abstract class QrContent {
 		try {
 			context.startActivity(getActionIntent());
 		} catch (ActivityNotFoundException e) {
-			// FIXME: wrong string resource
-			Toast.makeText(context, context.getString(R.string.alert_msg_invalid_market_link),
+			Toast.makeText(context, context.getString(R.string.alert_msg_activity_not_found),
 					Toast.LENGTH_SHORT).show();
 		}
+	}
+
+	public void performShare() {
+		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+		intent.setType("text/plain");
+		intent.putExtra(Intent.EXTRA_TEXT, rawContent);
+		context.startActivity(Intent.createChooser(intent, context.getString(R.string.intent_share_caption)));
 	}
 
 	public Intent getActionIntent() {

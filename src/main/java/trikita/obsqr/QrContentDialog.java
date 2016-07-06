@@ -21,6 +21,7 @@ public class QrContentDialog extends FrameLayout {
 	private TextView mContentText;
 	private TextView mCancelButton;
 	private TextView mActionButton;
+	private TextView mShareButton;
 
 	public QrContentDialog(Context c) {
 		this(c, null);
@@ -50,6 +51,13 @@ public class QrContentDialog extends FrameLayout {
 				QrContentDialog.this.close();
 			}
 		});
+		mShareButton = (TextView) findViewById(R.id.btn_share);
+		mShareButton.setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View v) {
+				QrContentDialog.this.performShare();
+			}
+		});
 	}
 
 	public void open(QrContent content) {
@@ -59,17 +67,6 @@ public class QrContentDialog extends FrameLayout {
 		mActionButton.setText(mContent.action);
 		removeCallbacks(mCloseDialogRunnable);
 		setVisibility(View.VISIBLE);
-
-		RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mCancelButton.getLayoutParams();
-		if (mContent.action.length() < MAX_HORIZONTAL_BUTTON_TEXT_LENGTH) {
-			params.addRule(RelativeLayout.BELOW, 0);
-			params.addRule(RelativeLayout.LEFT_OF, R.id.btn_action);
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT, 0);
-		} else {
-			params.addRule(RelativeLayout.BELOW, R.id.btn_action);
-			params.addRule(RelativeLayout.LEFT_OF, 0);
-			params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-		}
 	}
 
 	public boolean close() {
@@ -85,6 +82,12 @@ public class QrContentDialog extends FrameLayout {
 	public void performAction() {
 		if (mContent != null) {
 			mContent.performAction();
+		}
+	}
+
+	private void performShare() {
+		if (mContent != null) {
+			mContent.performShare();
 		}
 	}
 }
