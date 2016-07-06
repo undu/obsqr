@@ -13,6 +13,7 @@ import android.view.KeyEvent;
 import android.widget.Toast;
 
 import hugo.weaving.DebugLog;
+import trikita.obsqr.model.QrContent;
 
 public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecodedListener {
 
@@ -150,7 +151,7 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 
 	private void performAction(QrContent content) {
 		try {
-			this.startActivity(content.getActionIntent(this));
+			startActivity(content.getActionIntent(this));
 		} catch (ActivityNotFoundException e) {
 			Toast.makeText(this, this.getString(R.string.alert_msg_activity_not_found),
 					Toast.LENGTH_SHORT).show();
@@ -162,6 +163,6 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 		Intent intent = new Intent(android.content.Intent.ACTION_SEND);
 		intent.setType("text/plain");
 		intent.putExtra(Intent.EXTRA_TEXT, content.rawContent);
-		this.startActivity(Intent.createChooser(intent, this.getString(R.string.intent_share_caption)));
+		startActivity(Intent.createChooser(intent, this.getString(R.string.intent_share_caption)));
 	}
 }
