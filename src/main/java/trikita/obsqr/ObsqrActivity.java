@@ -50,23 +50,26 @@ public class ObsqrActivity extends Activity implements CameraPreview.OnQrDecoded
 		}
 		mLastKnownContent = s;
 		final QrContent mQrContent = QrContent.from(this, s);
-		mDialog.setTitle(mQrContent.title);
-		mDialog.setMessage(mQrContent.content);
-		mDialog.setButton(AlertDialog.BUTTON_POSITIVE, mQrContent.action, new DialogInterface.OnClickListener() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle(mQrContent.title);
+		builder.setMessage(mQrContent.content);
+		builder.setPositiveButton(mQrContent.action, new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				performAction(mQrContent);
 			}
 		});
-		mDialog.setButton(AlertDialog.BUTTON_NEUTRAL, this.getString(R.string.dlg_alert_share_btn_caption), new DialogInterface.OnClickListener() {
+		builder.setNeutralButton(this.getString(R.string.dlg_alert_share_btn_caption), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
 				performShare(mQrContent);
 			}
 		});
-		mDialog.setButton(AlertDialog.BUTTON_NEGATIVE, this.getString(R.string.dlg_alert_cancel_btn_caption), new DialogInterface.OnClickListener() {
+		builder.setNegativeButton(this.getString(R.string.dlg_alert_cancel_btn_caption), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int id) {
-				// do nothing (just dismiss dialog)
+				mDialog.dismiss();
 			}
 		});
+
+		mDialog = builder.create();
 		mDialog.show();
 	}
 
