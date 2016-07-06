@@ -15,7 +15,7 @@ public class CopyToClipboardActivity extends Activity {
         CharSequence text = getIntent().getCharSequenceExtra(Intent.EXTRA_TEXT);
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
         clipboardManager.setPrimaryClip(ClipData.newPlainText(null, text));
-        Toast.makeText(this, getString(R.string.text_qr_action_name),
+        Toast.makeText(this, getString(R.string.text_clipboard_used),
                 Toast.LENGTH_LONG).show();
         finish();
     }
