@@ -1,3 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="action_contact">Ver contacto</string>
+    <string name="action_email">Enviar correo</string>
+    <string name="action_geo">Ver en el mapa</string>
+    <string name="action_market"></string>
+    <string name="action_phone"></string>
+    <string name="action_sms">Enviar SMS</string>
+    <string name="action_text">Copiar al portapapeles</string>
+    <string name="action_url">Abrir</string>
+    <string name="action_wifi">Conectarse</string>
+    <string name="contact_qr_address_title">Dirección</string>
+    <string name="contact_qr_company_title">Empresa</string>
+    <string name="contact_qr_email_title">Email</string>
+    <string name="contact_qr_name_title">Nombre</string>
+    <string name="contact_qr_phone_title">Teléfono</string>
+    <string name="dlg_alert_cancel_btn_caption">Cancelar</string>
+    <string name="dlg_alert_msg">No se pudo usar ninguna cámara</string>
+    <string name="dlg_alert_ok_btn_caption">Ok</string>
+    <string name="email_qr_send_dlg_title">Enviar correo con…</string>
+    <string name="geo_qr_altitude_suffix">metros</string>
+    <string name="geo_qr_altitude_title">Altitud</string>
+    <string name="geo_qr_latitude_north">N</string>
+    <string name="geo_qr_latitude_south">S</string>
+    <string name="geo_qr_latitude_title">Latitud</string>
+    <string name="geo_qr_longitude_east">E</string>
+    <string name="geo_qr_longitude_west">O</string>
+    <string name="geo_qr_longitude_title">Longitud</string>
+    <string name="geo_qr_title_title">Título</string>
+    <string name="intent_share_caption">Compartir usando</string>
+    <string name="sms_qr_message_title">Texto</string>
+    <string name="sms_qr_phone_title">Número de teléfono</string>
+    <string name="text_qr_action_name">Copia el texto al portapapeles</string>
+    <string name="title_contact">Contacto</string>
+    <string name="title_email">Email</string>
+    <string name="title_geo">Geolocalización</string>
+    <string name="title_market">Applicación en Google Play</string>
+    <string name="title_phone">Número de Teléfono</string>
+    <string name="title_sms">SMS</string>
+    <string name="title_text">Texto plano</string>
+    <string name="title_url">Enlace</string>
+    <string name="title_wifi">Punto de acceso Wi-Fi</string>
+    <string name="wifi_qr_password_title">Contraseña</string>
+    <string name="wifi_qr_security_title">Seguridad</string>
+    <string name="wifi_qr_ssid_title">Nombre de la red</string>
+    <string name="dlg_alert_share_btn_caption">Compartir</string>
 </resources>

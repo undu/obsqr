@@ -19,8 +19,8 @@ public class ZBarDecoderTest extends InstrumentationTestCase {
 			try {
 				Bitmap bitmap =
 					BitmapFactory.decodeResource(getInstrumentation().getContext().getResources(), qr.getKey());
-				String s = new String(new QrDecoder(getInstrumentation().getContext())
-					.decode(bitmap.getWidth(), bitmap.getHeight(), nv21(bitmap)));
+				String s = new QrDecoder(getInstrumentation().getContext())
+						.decode(bitmap.getWidth(), bitmap.getHeight(), nv21(bitmap));
 				assertEquals(qr.getValue(), s);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -50,7 +50,7 @@ public class ZBarDecoderTest extends InstrumentationTestCase {
 				a = (argb[index] & 0xff000000) >> 24;
 				R = (argb[index] & 0xff0000) >> 16;
 				G = (argb[index] & 0xff00) >> 8;
-				B = (argb[index] & 0xff) >> 0;
+				B = (argb[index] & 0xff);
 
 				Y = ( (  66 * R + 129 * G +  25 * B + 128) >> 8) +  16;
 				U = ( ( -38 * R -  74 * G + 112 * B + 128) >> 8) + 128;

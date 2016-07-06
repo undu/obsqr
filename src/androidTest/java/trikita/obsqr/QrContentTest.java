@@ -5,6 +5,8 @@ import android.test.AndroidTestCase;
 import java.util.HashMap;
 import java.util.Map;
 
+import trikita.obsqr.model.QrContent;
+
 public class QrContentTest extends AndroidTestCase {
 
 	public void testBrokenRegexp() {

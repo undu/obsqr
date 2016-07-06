@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Obsqr</string>
 
 	<!-- Dutch translation by Ambroos @ XDA -->
 	<!-- Help prompts -->
@@ -31,26 +30,26 @@
 	<string name="text_qr_action_name">Kopiëer tekst</string>
 
 	<!-- Contact information -->
-	<string name="contact_qr_name_title">Naam:</string>
-	<string name="contact_qr_phone_title">Telefoonnummer:</string>
-	<string name="contact_qr_address_title">Adres:</string>
-	<string name="contact_qr_email_title">Email:</string>
-	<string name="contact_qr_company_title">Bedrijf:</string>
+	<string name="contact_qr_name_title">Naam</string>
+	<string name="contact_qr_phone_title">Telefoonnummer</string>
+	<string name="contact_qr_address_title">Adres</string>
+	<string name="contact_qr_email_title">Email</string>
+	<string name="contact_qr_company_title">Bedrijf</string>
 
 	<!-- Geolocation -->
-	<string name="geo_qr_title_title">Titel:</string>
-	<string name="geo_qr_latitude_title">Breedtegraad:</string>
+	<string name="geo_qr_title_title">Titel</string>
+	<string name="geo_qr_latitude_title">Breedtegraad</string>
 	<string name="geo_qr_latitude_south">Z</string>
 	<string name="geo_qr_latitude_north">N</string>
-	<string name="geo_qr_longitude_title">Lengtegraad:</string>
+	<string name="geo_qr_longitude_title">Lengtegraad</string>
 	<string name="geo_qr_longitude_west">W</string>
 	<string name="geo_qr_longitude_east">O</string>
-	<string name="geo_qr_altitude_title">Hoogte:</string>
+	<string name="geo_qr_altitude_title">Hoogte</string>
 	<string name="geo_qr_altitude_suffix">meter</string>
 
 	<!-- SMS -->
-	<string name="sms_qr_phone_title">Telefoonnummer:</string>
-	<string name="sms_qr_message_title">Tekst:</string>
+	<string name="sms_qr_phone_title">Telefoonnummer</string>
+	<string name="sms_qr_message_title">Tekst</string>
 
 	<!-- Email -->
 	<string name="email_qr_send_dlg_title">Email verstuurd via…</string>
