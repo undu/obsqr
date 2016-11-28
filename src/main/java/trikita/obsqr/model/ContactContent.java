@@ -13,7 +13,7 @@ import static trikita.obsqr.Utils.spannable;
 import static trikita.obsqr.Utils.tokenize;
 
 /** Contact information */
-class ContactContent extends QrContent {
+public class ContactContent extends QrContent {
     public final static String MATCH = "mecard:(.*)";
     private static String FIELDS[] = new String[]{"N", "TEL", "ADR", "EMAIL", "ORG"};
     private static int FIELD_NAMES[] = new int[]{
@@ -32,7 +32,7 @@ class ContactContent extends QrContent {
             ContactsContract.Intents.Insert.COMPANY,
     };
 
-    public ContactContent(Context c, String s) {
+    ContactContent(Context c, String s) {
         super(s, c.getString(R.string.title_contact), c.getString(R.string.action_contact), generateContent(c, s));
     }
 

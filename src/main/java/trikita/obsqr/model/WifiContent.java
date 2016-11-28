@@ -12,7 +12,7 @@ import static trikita.obsqr.Utils.spannable;
 import static trikita.obsqr.Utils.tokenize;
 
 /** WiFi access point */
-class WifiContent extends QrContent {
+public class WifiContent extends QrContent {
     public final static String MATCH = "wifi:(.*)";
     private final static String[] FIELDS = new String[]{"T", "S", "P"};
     private final static int[] FIELD_NAMES = new int[]{
@@ -21,7 +21,7 @@ class WifiContent extends QrContent {
             R.string.wifi_qr_password_title,
     };
 
-    public WifiContent(Context c, String s) {
+    WifiContent(Context c, String s) {
         super(s, c.getString(R.string.title_wifi), c.getString(R.string.action_wifi), generateContent(c, s));
     }
 

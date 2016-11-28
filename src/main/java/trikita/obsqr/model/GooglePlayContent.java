@@ -11,10 +11,10 @@ import trikita.obsqr.R;
 import static trikita.obsqr.Utils.spannable;
 
 /** Google Play URL */
-class GooglePlayContent extends QrContent {
+public class GooglePlayContent extends QrContent {
     public final static String MATCH = "market://(details\\?id=)?(.*)";
 
-    public GooglePlayContent(Context c, String s) {
+    GooglePlayContent(Context c, String s) {
         super(s, c.getString(R.string.title_market), c.getString(R.string.action_market), generateContent(s));
     }
 

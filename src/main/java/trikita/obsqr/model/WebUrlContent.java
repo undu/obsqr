@@ -8,7 +8,7 @@ import trikita.obsqr.R;
 import static trikita.obsqr.Utils.spannable;
 
 /** Web URL */
-class WebUrlContent extends QrContent {
+public class WebUrlContent extends QrContent {
     public final static String MATCH = android.util.Patterns.WEB_URL.pattern();
     public WebUrlContent(Context c, String s) {
         super(s, c.getString(R.string.title_url), c.getString(R.string.action_url), generateContent(s));

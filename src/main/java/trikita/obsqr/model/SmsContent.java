@@ -10,9 +10,9 @@ import trikita.obsqr.R;
 import static trikita.obsqr.Utils.spannable;
 
 /** SMS */
-class SmsContent extends QrContent {
+public class SmsContent extends QrContent {
     public final static String MATCH = "smsto:(.*)";
-    public SmsContent(Context c, String s) {
+    SmsContent(Context c, String s) {
         super(s, c.getString(R.string.title_sms), c.getString(R.string.action_sms), generateContent(c, s));
     }
 

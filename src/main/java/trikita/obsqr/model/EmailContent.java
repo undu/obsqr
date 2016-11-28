@@ -11,9 +11,9 @@ import trikita.obsqr.R;
 import static trikita.obsqr.Utils.spannable;
 
 /** E-mail address */
-class EmailContent extends QrContent {
+public class EmailContent extends QrContent {
     public final static String MATCH = "mailto:(.*)";
-    public EmailContent(Context c, String s) {
+    EmailContent(Context c, String s) {
         super(s, c.getString(R.string.title_email),
                 c.getString(R.string.action_email), generateContent(s));
     }

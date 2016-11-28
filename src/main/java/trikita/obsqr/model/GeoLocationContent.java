@@ -8,9 +8,9 @@ import trikita.obsqr.R;
 import static trikita.obsqr.Utils.spannable;
 
 /** Geolocation */
-class GeoLocationContent extends QrContent {
+public class GeoLocationContent extends QrContent {
     public final static String MATCH = "geo:(.*)";
-    public GeoLocationContent(Context c, String s) {
+    GeoLocationContent(Context c, String s) {
         super(s, c.getString(R.string.title_geo), c.getString(R.string.action_geo), generateContent(c, s));
     }
     private static Spannable generateContent(Context context, String s) {
