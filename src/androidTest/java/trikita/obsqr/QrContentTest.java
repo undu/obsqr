@@ -5,17 +5,25 @@ import android.test.AndroidTestCase;
 import java.util.HashMap;
 import java.util.Map;
 
+import trikita.obsqr.model.ContactContent;
+import trikita.obsqr.model.EmailContent;
+import trikita.obsqr.model.GeoLocationContent;
+import trikita.obsqr.model.GooglePlayContent;
+import trikita.obsqr.model.PhoneNumberContent;
 import trikita.obsqr.model.QrContent;
+import trikita.obsqr.model.SmsContent;
+import trikita.obsqr.model.WebUrlContent;
+import trikita.obsqr.model.WifiContent;
 
 public class QrContentTest extends AndroidTestCase {
 
 	public void testBrokenRegexp() {
 		String s = "http://qrs.ly/z24icxy";
-		assertFalse(s.matches(QrContent.GooglePlayContent.MATCH));
+		assertFalse(s.matches(GooglePlayContent.MATCH));
 		// For some reason, Moto G's String.match() caused ANR on this string
 		s = "https://play.google.com/store/apps/details?id=com.mvl.ThunderValley";
-		assertFalse(s.matches(QrContent.GooglePlayContent.MATCH));
-		assertTrue(s.matches(QrContent.WebUrlContent.MATCH));
+		assertFalse(s.matches(GooglePlayContent.MATCH));
+		assertTrue(s.matches(WebUrlContent.MATCH));
 	}
 
 	public void testGooglePlayMatcher() {
@@ -28,7 +36,7 @@ public class QrContentTest extends AndroidTestCase {
 			put("market://apps/collections/editors_choice", "market://apps/collections/editors_choice");
 		}}.entrySet()) {
 			QrContent qr = QrContent.from(getContext(), e.getKey());
-			assertEquals(QrContent.GooglePlayContent.class, qr.getClass());
+			assertEquals(GooglePlayContent.class, qr.getClass());
 			assertEquals(e.getValue(), qr.content.toString());
 		}
 	}
@@ -43,10 +51,10 @@ public class QrContentTest extends AndroidTestCase {
 		}}.entrySet()) {
 			QrContent qr = QrContent.from(getContext(), e.getKey());
 			if (e.getValue() != null) {
-				assertEquals(QrContent.WebUrlContent.class, qr.getClass());
+				assertEquals(WebUrlContent.class, qr.getClass());
 				assertEquals(e.getValue(), qr.content.toString());
 			} else {
-				assertFalse(qr instanceof QrContent.WebUrlContent);
+				assertFalse(qr instanceof WebUrlContent);
 			}
 		}
 	}
@@ -59,10 +67,10 @@ public class QrContentTest extends AndroidTestCase {
 		}}.entrySet()) {
 			QrContent qr = QrContent.from(getContext(), e.getKey());
 			if (e.getValue() != null) {
-				assertEquals(QrContent.EmailContent.class, qr.getClass());
+				assertEquals(EmailContent.class, qr.getClass());
 				assertEquals(e.getValue(), qr.content.toString());
 			} else {
-				assertFalse(qr instanceof QrContent.EmailContent);
+				assertFalse(qr instanceof EmailContent);
 			}
 		}
 	}
@@ -72,32 +80,32 @@ public class QrContentTest extends AndroidTestCase {
 		content = QrContent.from(getContext(), "smsto:+123456789");
 		content = QrContent.from(getContext(), "smsto:+18554407400:I am interested in using Scanova");
 		// SMSTO
-		assertEquals(QrContent.SmsContent.class, content.getClass());
+		assertEquals(SmsContent.class, content.getClass());
 	}
 
 	public void testPhoneNumberMatcher() {
 		QrContent content;
 		content = QrContent.from(getContext(), "tel:+123456789");
 		// TEL:
-		assertTrue(content instanceof QrContent.PhoneNumberContent);
+		assertTrue(content instanceof PhoneNumberContent);
 	}
 
 	public void testWifiMatcher() {
 		QrContent content;
 		content = QrContent.from(getContext(), "WIFI:S:Example;T:WPA;P:example123;;");
-		assertEquals(QrContent.WifiContent.class, content.getClass());
+		assertEquals(WifiContent.class, content.getClass());
 	}
 
 	public void testContactMatcher() {
 		QrContent content;
 		// TODO lots of other examples
 		content = QrContent.from(getContext(), "MECARD:N:John Doe;EMAIL:john@example.com;;");
-		assertEquals(QrContent.ContactContent.class, content.getClass());
+		assertEquals(ContactContent.class, content.getClass());
 	}
 
 	public void testGeolocationMatcher() {
 		QrContent content;
 		content = QrContent.from(getContext(), "geo:0,0");
-		assertEquals(QrContent.GeoLocationContent.class, content.getClass());
+		assertEquals(GeoLocationContent.class, content.getClass());
 	}
 }
