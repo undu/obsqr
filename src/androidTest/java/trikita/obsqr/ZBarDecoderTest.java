@@ -2,13 +2,23 @@ package trikita.obsqr;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.test.InstrumentationTestCase;
+import android.support.test.InstrumentationRegistry;
+import android.support.test.filters.LargeTest;
+import android.support.test.runner.AndroidJUnit4;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class ZBarDecoderTest extends InstrumentationTestCase {
+import static junit.framework.Assert.assertEquals;
 
+@RunWith(AndroidJUnit4.class)
+@LargeTest
+public class ZBarDecoderTest {
+
+	@Test
 	public void testBitmaps() {
 		Map<Integer, String> qrs = new HashMap<Integer, String>() {{
 			put(R.drawable.qr1, "http://www.qrstuff.com/");
@@ -18,8 +28,8 @@ public class ZBarDecoderTest extends InstrumentationTestCase {
 		for (Map.Entry<Integer, String> qr : qrs.entrySet()) {
 			try {
 				Bitmap bitmap =
-					BitmapFactory.decodeResource(getInstrumentation().getContext().getResources(), qr.getKey());
-				String s = new QrDecoder(getInstrumentation().getContext())
+					BitmapFactory.decodeResource(InstrumentationRegistry.getContext().getResources(), qr.getKey());
+				String s = new QrDecoder(InstrumentationRegistry.getContext())
 						.decode(bitmap.getWidth(), bitmap.getHeight(), nv21(bitmap));
 				assertEquals(qr.getValue(), s);
 			} catch (Exception e) {
